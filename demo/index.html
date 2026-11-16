@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <!-- built by tools/build.mjs from invite.json — edit invite.json, not this file -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>You&#39;ve been invited · Zaproszenie</title>
+  <meta name="description" content="Trzydziestka Kasi · 23.01.2027">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zaproszenie.cotoaleksandra.com/demo/">
+  <meta property="og:title" content="You&#39;ve been invited · Zaproszenie">
+  <meta property="og:description" content="Trzydziestka Kasi · 23.01.2027">
+  <meta property="og:image" content="https://zaproszenie.cotoaleksandra.com/demo/img/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A cream envelope sealed with wax: You&#39;ve been invited · Zaproszenie">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#e9e8e4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,800;1,400&family=Monsieur+La+Doulaise&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../kit/invite.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.8em' x='10' font-size='80'>✳</text></svg>">
+</head>
+<body>
+  <header class="furn furn--top">
+    <a href="https://cotoaleksandra.com" target="_blank" rel="noopener">cotoaleksandra</a>
+    <button class="lang" id="lang" aria-label="Language"></button>
+    <span>23.01.2027</span>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="stage" id="stage">
+        <!-- envelope parts are siblings of the card so the card can sit between them -->
+        <div class="env env-back"></div>
+
+        <div class="card" id="card" role="button" tabindex="-1" aria-label="card">
+          <div class="card-inner">
+            <div class="face front">
+              <div class="face-frame">
+                <div class="c-top"><span>no. XXX</span><b id="c-num"></b><span>2027</span></div>
+                <div class="c-window">
+                  <canvas id="halftone"></canvas>
+                  <span class="c-placeholder" id="c-placeholder" hidden></span>
+                </div>
+                <div class="c-title">
+                  <span class="heavy" id="c-heavy"></span>
+                  <span class="script" id="c-script"></span>
+                </div>
+              </div>
+            </div>
+            <div class="face back">
+              <div class="face-frame back-frame">
+                <div class="c-top"><span id="b-date"></span><b>XXX</b><span id="b-time"></span></div>
+                <h1 class="b-title"><span class="script" id="b-script"></span><span class="heavy" id="b-heavy"></span></h1>
+                <ul class="ruled" id="b-list"></ul>
+                <p class="b-note" id="b-note"></p>
+                <p class="b-sign script" id="b-sign"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="env env-pocket-wrap"><div class="env-pocket"></div></div>
+        <div class="env env-flap-wrap" id="flap"><div class="env-flap"></div></div>
+
+        <button class="seal" id="seal" aria-label="Open the envelope">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <defs>
+              <radialGradient id="wax" cx="38%" cy="32%" r="75%">
+                <stop offset="0" stop-color="#b3323c"/>
+                <stop offset=".45" stop-color="#6e1018" id="wax-mid"/>
+                <stop offset="1" stop-color="#2c0407"/>
+              </radialGradient>
+              <radialGradient id="press" cx="50%" cy="50%" r="50%">
+                <stop offset=".6" stop-color="rgba(0,0,0,0)"/>
+                <stop offset="1" stop-color="rgba(0,0,0,.35)"/>
+              </radialGradient>
+              <clipPath id="half-l"><path d="M0 0H62L55 22 66 40 52 58 63 77 50 96 58 120H0Z"/></clipPath>
+              <clipPath id="half-r"><path d="M62 0H120V120H58L50 96 63 77 52 58 66 40 55 22Z"/></clipPath>
+              <g id="seal-art">
+                <path d="M60 4c9 0 13 5 21 6 9 2 15 1 21 8 6 7 3 13 7 21 4 8 9 12 8 21-1 9-7 12-9 20-2 9 1 15-6 21-7 6-14 3-22 7-8 4-11 9-20 9s-13-5-21-7c-9-2-15 0-21-7s-3-13-7-21c-4-8-10-11-9-20 1-9 7-12 9-20 2-8-1-15 6-21 7-6 14-3 22-7 8-4 11-10 20-10z" fill="url(#wax)"/>
+                <circle cx="60" cy="61" r="38" fill="url(#press)"/>
+                <circle cx="60" cy="61" r="38" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="2"/>
+                <circle cx="60" cy="61" r="39.5" fill="none" stroke="rgba(255,190,190,.18)" stroke-width="1"/>
+                <text id="seal-txt" x="60" y="76" text-anchor="middle" font-family="Monsieur La Doulaise, cursive" font-size="54" fill="rgba(0,0,0,.42)"></text>
+                <text id="seal-txt2" x="59" y="75" text-anchor="middle" font-family="Monsieur La Doulaise, cursive" font-size="54" fill="rgba(255,170,170,.22)"></text>
+              </g>
+            </defs>
+            <g class="half l"><use href="#seal-art" clip-path="url(#half-l)"/></g>
+            <g class="half r"><use href="#seal-art" clip-path="url(#half-r)"/></g>
+          </svg>
+        </button>
+      </div>
+      <p class="hint" id="hint"></p>
+      <a class="to-rsvp" id="to-rsvp" href="#rsvp" hidden></a>
+    </section>
+
+    <section class="rsvp" id="rsvp" hidden>
+      <div class="rsvp-head">
+        <span class="script" id="r-script"></span>
+        <h2 class="heavy">RSVP</h2>
+      </div>
+      <form id="rsvp-form" novalidate autocomplete="on">
+        <div id="fields"></div>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="err" id="err" role="alert" hidden></p>
+        <button class="send" id="send" type="submit"></button>
+      </form>
+      <div class="thanks" id="thanks" hidden></div>
+    </section>
+  </main>
+
+  <footer class="furn furn--bottom">
+    <span id="f-left"></span>
+    <span>kasia · thirty</span>
+    <span>no. XXX</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="../kit/backend.js"></script>
+  <script src="config.js"></script>
+  <script src="../kit/data.js"></script>
+  <script src="../kit/halftone.js"></script>
+  <script src="../kit/invite.js"></script>
+</body>
+</html>

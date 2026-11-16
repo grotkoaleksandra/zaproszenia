@@ -1,0 +1,35 @@
+{
+  "demo": true,
+  "languages": ["pl", "en"],
+  "voice": "f",
+
+  "host": "Kasia",
+  "sender": "Kasia",
+
+  "title": { "pl": "Trzydziestka Kasi", "en": "Kasia's thirtieth" },
+  "scriptName": { "pl": "Trzydziestka", "en": "Kasia's" },
+  "heavyTitle": { "pl": "KASI", "en": "THIRTIETH" },
+
+  "date": "2027-01-23",
+  "time": "19:00",
+  "durationHours": 6,
+  "place": "Bar Studio",
+  "address": { "pl": "pl. Defilad 1, 00-901 Warszawa", "en": "pl. Defilad 1, 00-901 Warsaw" },
+  "mapUrl": "",
+  "note": {
+    "pl": "Kończę trzydzieści lat i chcę to uczcić z Tobą. Daj znać, czy będziesz.",
+    "en": "I'm turning thirty and I'd love to celebrate with you. Let me know if you can make it."
+  },
+
+  "card": { "number": "XXX", "titleHeavy": "KASIA", "titleScript": "thirty", "photo": "" },
+  "seal": { "initials": "K", "wax": "#6e1018" },
+  "footer": "kasia · thirty",
+
+  "rsvp": {
+    "plusOne": true,
+    "message": true,
+    "extra": [
+      { "id": "diet", "type": "text", "label": { "pl": "Dieta lub alergie?", "en": "Any diet or allergies?" } }
+    ]
+  }
+}

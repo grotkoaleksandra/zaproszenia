@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Guest list · Kasia&#39;s thirtieth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,800;1,400&family=Monsieur+La+Doulaise&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../kit/invite.css">
+  <link rel="stylesheet" href="../kit/admin.css">
+</head>
+<body>
+  <header class="furn"><span>cotoaleksandra</span><span>guest list</span><span>23.01.2027</span></header>
+  <div class="wrap">
+    <div class="head"><span class="script">the</span><h1 class="heavy">Guest list</h1></div>
+
+    <div class="login" id="locked" hidden>
+      <p>This list opens only with your private link. Open the link you saved, and this device will remember it.</p>
+    </div>
+
+    <div id="app" hidden>
+      <div class="banner" id="demo" hidden>
+        <b>DEMO MODE.</b> Answers are only saved in this browser (local preview or demo invite).
+        <button class="linkish" id="reset" style="text-decoration:underline">clear test answers</button>
+      </div>
+      <div class="stats" id="stats"></div>
+
+      <h2 class="sec"><span>Confirmed</span><i id="c-count"></i></h2>
+      <ol class="list" id="yes"></ol>
+
+      <h2 class="sec"><span>Can't come</span><i id="n-count"></i></h2>
+      <ol class="list" id="no"></ol>
+
+      <div class="tools">
+        <button class="pill" id="copy">Copy confirmed names</button>
+        <button class="pill" id="csv">Download CSV</button>
+        <button class="pill" id="refresh">Refresh</button>
+        <button class="pill" id="forget" hidden>Forget this device</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="../kit/backend.js"></script>
+  <script src="config.js"></script>
+  <script src="../kit/data.js"></script>
+  <script src="../kit/admin.js"></script>
+</body>
+</html>

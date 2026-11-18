@@ -13,9 +13,9 @@
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.15 0 0 0 0 0.14 0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   /* card + envelope geometry */
-  --cw: min(62vw, 300px, calc((100svh - 190px) * 7 / 12.6));
+  --cw: min(56vw, 300px, calc((100svh - 190px) * 7 / 12.6));
   --ch: calc(var(--cw) * 12 / 7);
-  --ew: calc(var(--cw) * 1.16);
+  --ew: calc(var(--cw) * 1.5);
   --eh: calc(var(--ch) * 1.05);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,7 +85,7 @@ body.opened .furn--bottom { position: static; }
 
 /* wax seal */
 .seal {
-  position: absolute; z-index: 6; width: calc(var(--ew) * .3); aspect-ratio: 1;
+  position: absolute; z-index: 6; width: calc(var(--cw) * .35); aspect-ratio: 1;
   left: 50%; top: calc(var(--eh) * .56); transform: translate(-50%, -50%); transform-origin: 82% 18%;
   filter: drop-shadow(0 3px 3px rgba(40, 5, 8, .45)); transition: transform 1s cubic-bezier(.6, -.05, .7, .2), opacity 1s;
   animation: breathe 2.8s ease-in-out infinite;
@@ -202,10 +202,10 @@ body.opened .furn--bottom { position: static; }
 /* ───────── image capture mode (tools/capture.sh) ───────── */
 .capture *, .capture *::before, .capture *::after { animation: none !important; transition: none !important; }
 .capture .furn, .capture .hint, .capture .to-rsvp, .capture .rsvp { display: none !important; }
-.capture-front, .capture-back { --cw: 600px; --ch: calc(var(--cw) * 12 / 7); --ew: calc(var(--cw) * 1.16); --eh: calc(var(--ch) * 1.05); }
+.capture-front, .capture-back { --cw: 600px; --ch: calc(var(--cw) * 12 / 7); --ew: calc(var(--cw) * 1.5); --eh: calc(var(--ch) * 1.05); }
 .capture-front .hero, .capture-back .hero { padding: 0; min-height: 0; height: 100vh; }
 .capture-front .face, .capture-back .face { box-shadow: none; }
-.capture-og { --cw: 262px; --ch: calc(var(--cw) * 12 / 7); --ew: calc(var(--cw) * 1.16); --eh: calc(var(--ch) * 1.05); }
+.capture-og { --cw: 262px; --ch: calc(var(--cw) * 12 / 7); --ew: calc(var(--cw) * 1.5); --eh: calc(var(--ch) * 1.05); }
 .capture-og .hero { height: 100vh; min-height: 0; padding: 0; place-content: center end; padding-right: 120px; }
 .og-text { position: fixed; left: 80px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; }
 .og-text .script { font-size: 120px; margin-bottom: -46px; margin-left: 10px; position: relative; z-index: 1; }

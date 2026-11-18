@@ -33,7 +33,38 @@
     <section class="hero" id="hero">
       <div class="stage" id="stage">
         <!-- envelope parts are siblings of the card so the card can sit between them -->
-        <div class="env env-back"></div>
+        <svg class="env-defs" width="0" height="0" aria-hidden="true" focusable="false">
+          <defs>
+            <!-- rough paper: wobbly torn-ish edges + raised tooth lit from the top left -->
+            <filter id="paper-a" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency=".07" numOctaves="3" seed="4" result="warp"/>
+              <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.1" xChannelSelector="R" yChannelSelector="G" result="shape"/>
+              <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="3" seed="11" result="tooth"/>
+              <feDiffuseLighting in="tooth" surfaceScale=".9" lighting-color="#fff" result="lit"><feDistantLight azimuth="225" elevation="52"/></feDiffuseLighting>
+              <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="2" seed="2" result="mottle"/>
+              <feColorMatrix in="mottle" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -.9 0 0 0 .95" result="mottleA"/>
+              <feComposite in="shape" in2="lit" operator="arithmetic" k1=".22" k2=".84" result="tex"/>
+              <feComposite in="tex" in2="mottleA" operator="arithmetic" k1="0" k2="1" k3="-.05" result="tex2"/>
+              <feComposite in="tex2" in2="shape" operator="in"/>
+            </filter>
+            <filter id="paper-b" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency=".07" numOctaves="3" seed="9" result="warp"/>
+              <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.1" xChannelSelector="R" yChannelSelector="G" result="shape"/>
+              <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="3" seed="23" result="tooth"/>
+              <feDiffuseLighting in="tooth" surfaceScale=".9" lighting-color="#fff" result="lit"><feDistantLight azimuth="225" elevation="52"/></feDiffuseLighting>
+              <feComposite in="shape" in2="lit" operator="arithmetic" k1=".22" k2=".84" result="tex"/>
+              <feComposite in="tex" in2="shape" operator="in"/>
+            </filter>
+            <filter id="soft" x="-10%" y="-10%" width="120%" height="130%"><feGaussianBlur stdDeviation="1.1"/></filter>
+            <linearGradient id="g-back" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9cdb0"/><stop offset="1" stop-color="#e3d8bd"/></linearGradient>
+            <linearGradient id="g-side" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#efe7d3"/><stop offset="1" stop-color="#e6dcc3"/></linearGradient>
+            <linearGradient id="g-side-r" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#efe7d3"/><stop offset="1" stop-color="#e6dcc3"/></linearGradient>
+            <linearGradient id="g-bottom" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f3ecdb"/><stop offset="1" stop-color="#ebe2cb"/></linearGradient>
+            <linearGradient id="g-flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5efe0"/><stop offset="1" stop-color="#ece3cc"/></linearGradient>
+            <linearGradient id="g-flap-in" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#dfd3b6"/><stop offset="1" stop-color="#e8dec5"/></linearGradient>
+          </defs>
+        </svg>
+        <div class="env env-back"><svg viewBox="0 0 116 180" aria-hidden="true"><rect width="116" height="180" rx="1.4" fill="url(#g-back)" filter="url(#paper-a)"/></svg></div>
 
         <div class="card" id="card" role="button" tabindex="-1" aria-label="card">
           <div class="card-inner">
@@ -62,8 +93,25 @@
           </div>
         </div>
 
-        <div class="env env-pocket-wrap"><div class="env-pocket"></div></div>
-        <div class="env env-flap-wrap" id="flap"><div class="env-flap"></div></div>
+        <div class="env env-pocket-wrap"><svg class="env-pocket" viewBox="0 0 116 180" aria-hidden="true">
+          <path d="M1.5 2 L58 93 L114.5 2 V178 H1.5 Z" fill="#e8dec6"/>
+          <g filter="url(#paper-a)">
+            <path d="M0 0 L55 91 Q57.5 95.5 54.5 99 L0 180 Z" fill="url(#g-side)"/>
+            <path d="M116 0 L61 91 Q58.5 95.5 61.5 99 L116 180 Z" fill="url(#g-side-r)"/>
+          </g>
+          <path d="M0 180 L53 104 Q58 97 63 104 L116 180 Z" transform="translate(0 -1.4)" fill="rgba(42,41,38,.12)" filter="url(#soft)"/>
+          <path d="M0 180 L53 104 Q58 97 63 104 L116 180 Z" fill="url(#g-bottom)" filter="url(#paper-b)"/>
+        </svg></div>
+        <div class="env env-flap-wrap" id="flap">
+          <svg class="env-flap" viewBox="0 0 116 180" aria-hidden="true">
+            <path d="M0 0 H116 L62 99 Q58 105 54 99 Z" transform="translate(0 1.6)" fill="rgba(42,41,38,.3)" filter="url(#soft)"/>
+            <path d="M0 0 H116 L62 99 Q58 105 54 99 Z" fill="url(#g-flap)" filter="url(#paper-b)"/>
+            <circle class="residue" cx="58" cy="100.5" r="14" filter="url(#soft)"/>
+          </svg>
+          <svg class="env-flap env-flap-in" viewBox="0 0 116 180" aria-hidden="true">
+            <path d="M0 180 H116 L62 81 Q58 75 54 81 Z" fill="url(#g-flap-in)" filter="url(#paper-a)"/>
+          </svg>
+        </div>
 
         <button class="seal" id="seal" aria-label="Open the envelope">
           <svg viewBox="0 0 120 120" aria-hidden="true">
@@ -77,8 +125,6 @@
                 <stop offset=".6" stop-color="rgba(0,0,0,0)"/>
                 <stop offset="1" stop-color="rgba(0,0,0,.35)"/>
               </radialGradient>
-              <clipPath id="half-l"><path d="M0 0H62L55 22 66 40 52 58 63 77 50 96 58 120H0Z"/></clipPath>
-              <clipPath id="half-r"><path d="M62 0H120V120H58L50 96 63 77 52 58 66 40 55 22Z"/></clipPath>
               <g id="seal-art">
                 <path d="M60 4c9 0 13 5 21 6 9 2 15 1 21 8 6 7 3 13 7 21 4 8 9 12 8 21-1 9-7 12-9 20-2 9 1 15-6 21-7 6-14 3-22 7-8 4-11 9-20 9s-13-5-21-7c-9-2-15 0-21-7s-3-13-7-21c-4-8-10-11-9-20 1-9 7-12 9-20 2-8-1-15 6-21 7-6 14-3 22-7 8-4 11-10 20-10z" fill="url(#wax)"/>
                 <circle cx="60" cy="61" r="38" fill="url(#press)"/>
@@ -88,8 +134,7 @@
                 <text id="seal-txt2" x="59" y="75" text-anchor="middle" font-family="Monsieur La Doulaise, cursive" font-size="54" fill="rgba(255,170,170,.22)"></text>
               </g>
             </defs>
-            <g class="half l"><use href="#seal-art" clip-path="url(#half-l)"/></g>
-            <g class="half r"><use href="#seal-art" clip-path="url(#half-r)"/></g>
+            <use href="#seal-art"/>
           </svg>
         </button>
       </div>

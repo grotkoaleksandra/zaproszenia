@@ -62,53 +62,43 @@ body.opened .furn--bottom { position: static; }
 .env { position: absolute; inset: 0; transition: transform 1s cubic-bezier(.6, -.05, .7, .2), opacity 1s; }
 .stage.dropped .env, .stage.dropped .seal { transform: translateY(115vh) rotate(6deg); opacity: 0; pointer-events: none; }
 .stage.gone .env, .stage.gone .seal { visibility: hidden; }
-.env-back {
-  z-index: 1; border-radius: 4px;
-  background: var(--cream-3) var(--grain);
-  box-shadow: 0 18px 40px -18px rgba(42, 41, 38, .5), 0 2px 6px rgba(42, 41, 38, .18);
-}
-.env-pocket-wrap { z-index: 3; filter: drop-shadow(0 -1px 1px rgba(42, 41, 38, .18)); pointer-events: none; }
-.env-pocket {
-  position: absolute; inset: 0; border-radius: 0 0 4px 4px;
-  background:
-    linear-gradient(to top right, transparent 49.6%, rgba(42,41,38,.07) 50%, transparent 50.6%) left bottom / 50% 62% no-repeat,
-    linear-gradient(to top left, transparent 49.6%, rgba(42,41,38,.07) 50%, transparent 50.6%) right bottom / 50% 62% no-repeat,
-    var(--grain), linear-gradient(180deg, var(--cream-2), var(--cream));
-  clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
-}
+.env svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.env-defs { position: absolute; width: 0; height: 0; }
+.env-back { z-index: 1; filter: drop-shadow(0 16px 22px rgba(42, 41, 38, .28)) drop-shadow(0 2px 3px rgba(42, 41, 38, .2)); }
+.env-pocket-wrap { z-index: 3; filter: drop-shadow(0 -1px 1px rgba(42, 41, 38, .16)); pointer-events: none; }
+/* the flap is a 3D hinge: no CSS filter on it (filters flatten 3D and break it in Safari); its shadow is drawn in the SVG */
 .env-flap-wrap {
   z-index: 4; transform-origin: 50% 0; transform-style: preserve-3d;
-  filter: drop-shadow(0 3px 2px rgba(42, 41, 38, .22));
-  transition: transform .75s cubic-bezier(.45, 0, .2, 1);
+  transition: transform .8s cubic-bezier(.45, 0, .2, 1);
   pointer-events: none;
 }
-.env-flap {
-  position: absolute; inset: 0;
-  background: var(--grain), linear-gradient(180deg, var(--cream), var(--cream-2));
-  clip-path: polygon(0 0, 100% 0, 50% 56%);
-  border-radius: 4px 4px 0 0;
-}
+.env-flap { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.env-flap-in { transform: rotateX(180deg); }
+.residue { fill: var(--wax, #6e1018); opacity: 0; transition: opacity .5s .25s; }
+.stage.peeled .residue { opacity: .14; }
 .stage.open .env-flap-wrap { transform: rotateX(178deg); }
 .stage.flap-behind .env-flap-wrap { z-index: 0; }
 .stage.dropped .env-flap-wrap { transform: translateY(115vh) rotateX(178deg); }
+/* while it opens, step back a little so the open flap and the rising card stay on screen */
+.stage { transform-origin: 50% 100%; transition: scale .9s cubic-bezier(.4, 0, .2, 1), translate .9s cubic-bezier(.4, 0, .2, 1); }
+.stage.open:not(.dropped) { scale: .8; translate: 0 9%; }
 
 /* wax seal */
 .seal {
   position: absolute; z-index: 6; width: calc(var(--ew) * .3); aspect-ratio: 1;
-  left: 50%; top: calc(var(--eh) * .56); transform: translate(-50%, -50%);
+  left: 50%; top: calc(var(--eh) * .56); transform: translate(-50%, -50%); transform-origin: 82% 18%;
   filter: drop-shadow(0 3px 3px rgba(40, 5, 8, .45)); transition: transform 1s cubic-bezier(.6, -.05, .7, .2), opacity 1s;
   animation: breathe 2.8s ease-in-out infinite;
 }
 .seal svg { width: 100%; height: 100%; overflow: visible; }
-.seal .half { transition: transform .7s cubic-bezier(.3, .6, .4, 1), opacity .7s .15s; transform-box: fill-box; }
-.seal .half.l { transform-origin: 30% 80%; }
-.seal .half.r { transform-origin: 70% 80%; }
-.stage.cracked .seal { animation: crack-shake .28s linear; }
-.stage.cracked .seal .half.l { transform: translate(-26px, 34px) rotate(-28deg); opacity: 0; }
-.stage.cracked .seal .half.r { transform: translate(26px, 40px) rotate(24deg); opacity: 0; }
-.stage.cracked .seal { pointer-events: none; }
+.stage.peeled .seal { animation: peel .75s cubic-bezier(.55, 0, .7, .4) forwards; pointer-events: none; }
 @keyframes breathe { 50% { transform: translate(-50%, -50%) scale(1.04); } }
-@keyframes crack-shake { 25% { transform: translate(-52%, -50%) rotate(-3deg); } 75% { transform: translate(-48%, -50%) rotate(3deg); } }
+/* peels off like a sticker: the bottom-left edge lifts first, then it comes away */
+@keyframes peel {
+  0%   { transform: translate(-50%, -50%); filter: drop-shadow(0 3px 3px rgba(40, 5, 8, .45)); }
+  35%  { transform: translate(-50%, -52%) rotate3d(1, -1, 0, 38deg); filter: drop-shadow(-4px 8px 6px rgba(40, 5, 8, .4)); }
+  100% { transform: translate(10%, -150%) rotate3d(1, -1, .3, 95deg); filter: drop-shadow(-10px 22px 14px rgba(40, 5, 8, 0)); opacity: 0; }
+}
 
 /* ───────── the card ───────── */
 .card {

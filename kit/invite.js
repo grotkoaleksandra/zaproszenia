@@ -40,6 +40,7 @@
   const t = (k, ...a) => { const v = T[lang][k]; return typeof v === "function" ? v(...a) : v; };
 
   const stage = $("#stage"), card = $("#card");
+  stage.style.setProperty("--wax", (C.seal && C.seal.wax) || "#6e1018");
   let phase = "closed"; // closed → opening → open
   let photoSrc = null;
 
@@ -110,8 +111,8 @@
     if (phase !== "closed") return;
     phase = "opening"; $("#hint").textContent = "";
     if (navigator.vibrate) navigator.vibrate(18);
-    stage.classList.add("cracked");
-    await wait(450);
+    stage.classList.add("peeled");
+    await wait(620);
     stage.classList.add("open");
     await wait(380);
     stage.classList.add("flap-behind");
@@ -215,7 +216,7 @@
   function showOpened() {
     // skip the envelope (link from the email: ?open=1)
     stage.style.animation = "none";
-    stage.classList.add("cracked", "open", "flap-behind", "rising", "dropped", "gone", "instant");
+    stage.classList.add("peeled", "open", "flap-behind", "rising", "dropped", "gone", "instant");
     phase = "open";
     card.setAttribute("tabindex", "0");
     document.body.classList.add("opened");

@@ -7,6 +7,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import crypto from "node:crypto";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE_BASE = "https://zaproszenie.cotoaleksandra.com";
@@ -120,7 +121,10 @@ const config = {
 };
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const ogTitle = langs.length === 1 && langs[0] === "pl" ? "Masz zaproszenie" : langs.includes("pl") ? "You've been invited · Zaproszenie" : "You've been invited";
+// version stamp for the shared kit + this client's config, so browsers never mix old and new files
+const ver = crypto.createHash("sha1").update(fs.readdirSync(path.join(ROOT, "kit")).sort().map((f) => fs.readFileSync(path.join(ROOT, "kit", f))).join("") + JSON.stringify(config)).digest("hex").slice(0, 8);
 const vars = {
+  ver,
   lang: langs[0], ogTitle, ogDesc: `${title[langs[0]]} · ${dateDots}`, site, dateDots,
   cornerLeft: card.cornerLeft || `no. ${String(card.number).padStart(2, "0")}`, cornerRight: card.cornerRight || y,
   number: card.number, wax, footer, titleEn: title.en || title.pl,

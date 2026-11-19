@@ -50,6 +50,28 @@ window.Halftone = (() => {
     ctx.restore();
   }
 
+  // Grainy black-and-white photo on cream paper (cover-fit), with film grain.
+  function photo(canvas, src, { ink = [42, 41, 38], paper = [251, 247, 236], contrast = 1.5, grain = 0.22 } = {}) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = canvas.clientWidth, H = canvas.clientHeight;
+    if (!W || !H) return;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height;
+    const s = Math.max(canvas.width / sw, canvas.height / sh), dw = sw * s, dh = sh * s;
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(src, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+    const id = ctx.getImageData(0, 0, canvas.width, canvas.height), p = id.data;
+    let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    for (let i = 0; i < p.length; i += 4) {
+      let l = (p[i] * 0.299 + p[i + 1] * 0.587 + p[i + 2] * 0.114) / 255;
+      l = Math.min(1, Math.max(0, (l - 0.5) * contrast + 0.55));
+      const v = Math.max(0, Math.min(1, Math.pow(l, 1.1) + (rnd() - 0.5) * grain));
+      p[i] = ink[0] + v * (paper[0] - ink[0]); p[i + 1] = ink[1] + v * (paper[1] - ink[1]); p[i + 2] = ink[2] + v * (paper[2] - ink[2]);
+    }
+    ctx.putImageData(id, 0, 0);
+  }
+
   // Stand-in when there's no photo: seven swords standing in a row,
   // points down, under a soft moon. No figure.
   function standIn() {
@@ -79,5 +101,5 @@ window.Halftone = (() => {
     return c;
   }
 
-  return { render, standIn };
+  return { render, photo, standIn };
 })();

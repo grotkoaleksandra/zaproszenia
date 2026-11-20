@@ -34,3 +34,9 @@ select cron.unschedule('purge-old-rsvps') where exists (select 1 from cron.job w
 select cron.schedule('purge-old-rsvps', '0 3 * * *', 'select public.purge_old_rsvps()');
 
 select slug, site, sender, event_date from public.events order by created_at;
+
+-- host notification: a short email to the host for every reply
+alter table public.events add column if not exists notify boolean not null default false;
+alter table public.events add column if not exists notify_to text;
+update public.events set notify = true where slug = 'ola-urodziny-2026';
+select slug, notify, notify_to is not null as has_notify_to from public.events order by created_at;

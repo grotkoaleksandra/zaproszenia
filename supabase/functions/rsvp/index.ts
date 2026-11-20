@@ -5,6 +5,10 @@
 // The email content comes only from the event's own site (event.json), never
 // from the request, so this can't be used to send arbitrary mail.
 //
+// If the event has notify = true, the host also gets a short email for every
+// reply (name + answers, never the guest's email), sent to the event's
+// notify_to, or CONTACT_NOTIFY_TO when that's empty.
+//
 // Secrets used: RESEND_API_KEY, CONTACT_NOTIFY_TO (reply-to), plus the
 // built-in SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY.
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -66,7 +70,7 @@ Deno.serve(async (req) => {
   }
 
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-  const { data: ev, error: evErr } = await sb.from("events").select("id, site, sender").eq("slug", slug).maybeSingle();
+  const { data: ev, error: evErr } = await sb.from("events").select("id, site, sender, notify, notify_to").eq("slug", slug).maybeSingle();
   if (evErr || !ev) return json({ error: "unknown event" }, 404);
   if (!ev.site || !SITE_RE.test(ev.site)) return json({ error: "event not set up" }, 404);
   const sender = String(ev.sender || "cotoaleksandra").replace(/[<>"\r\n]/g, "").slice(0, 60).trim();
@@ -111,8 +115,51 @@ Deno.serve(async (req) => {
       }
     } catch (e) { console.error("email error:", e); }
   }
+  // tell the host
+  if (ev.notify && resendKey) {
+    const to = String(ev.notify_to || Deno.env.get("CONTACT_NOTIFY_TO") || "").trim();
+    if (EMAIL_RE.test(to)) {
+      try {
+        const { data: rows } = await sb.from("rsvps").select("name, answers, created_at").eq("event_id", ev.id).order("created_at");
+        const last = new Map<string, any>();  // latest reply per name counts
+        for (const r of rows ?? []) last.set(String(r.name).trim().toLowerCase(), r.answers ?? {});
+        let yes = 0, no = 0, plus = 0;
+        for (const x of last.values()) { if (x.attending === "yes") { yes++; if (x.plus_one === "yes") plus++; } else no++; }
+        const content: EventContent | null = await fetch(`${cfg.site}/event.json`, { cache: "no-store" }).then((r) => r.json()).catch(() => null);
+        const mail = buildHostEmail(content, cfg.site, name, answers, { yes, no, plus });
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ from: `cotoaleksandra <${FROM_ADDRESS}>`, to: [to], subject: mail.subject, html: mail.html, text: mail.text }),
+        });
+        if (!res.ok) console.error("host notify failed:", res.status, await res.text());
+      } catch (e) { console.error("host notify error:", e); }
+    }
+  }
   return json({ ok: true, emailed });
 });
+
+// short note to the host: who replied and what, plus the running count.
+// Never includes the guest's email address.
+function buildHostEmail(c: EventContent | null, site: string, name: string, a: Record<string, string>, n: { yes: number; no: number; plus: number }) {
+  const yes = a.attending === "yes";
+  const title = c?.title?.pl || "zaproszenie";
+  const lines: [string, string][] = [["Odpowiedź", yes ? "Tak, będzie" : "Nie da rady"]];
+  if (yes && a.plus_one) lines.push(["+1", a.plus_one === "yes" ? "Tak" : "Nie"]);
+  for (const [k, v] of Object.entries(a)) if (!["attending", "plus_one", "email", "message"].includes(k)) lines.push([k, v]);
+  if (a.message) lines.push(["Wiadomość", a.message]);
+  const total = `Na razie: ${n.yes} na tak${n.plus ? ` (+${n.plus} os. towarzyszących)` : ""}, ${n.no} na nie.`;
+  const ink = "#2a2926", font = "'Inter Tight','Helvetica Neue',Helvetica,Arial,sans-serif";
+  const html = `<!doctype html><html><body style="margin:0;background:#e9e8e4"><div style="max-width:480px;margin:0 auto;padding:28px 18px;font:15px/1.5 ${font};color:${ink}">
+<div style="font:800 26px/1.1 ${font};text-transform:uppercase;letter-spacing:-1px">${esc(name)}: ${yes ? "tak ✓" : "nie"}</div>
+<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:18px 0">${lines.map(([k, v]) =>
+  `<tr><td style="padding:8px 0;border-top:1px solid #b9b7b1;font:800 12px ${font};text-transform:uppercase;vertical-align:top;width:110px">${esc(k)}</td><td style="padding:8px 0;border-top:1px solid #b9b7b1">${esc(v)}</td></tr>`).join("")}</table>
+<p style="margin:0 0 18px">${esc(total)}</p>
+<p style="margin:0;font-size:13px;color:#6a6863">Pełna lista: ${esc(site)}/admin.html (otwórz na urządzeniu, na którym już ją otwierałaś).</p>
+</div></body></html>`;
+  const text = `${name}: ${yes ? "tak" : "nie"}\n\n${lines.map(([k, v]) => `${k}: ${v}`).join("\n")}\n\n${total}\n\nPełna lista: ${site}/admin.html`;
+  return { subject: `${name}: ${yes ? "tak ✓" : "nie"} · ${title}`, html, text };
+}
 
 // "made by" line at the bottom of every email: it's how new hosts find you
 const credit = (lang: "pl" | "en", font: string) =>
